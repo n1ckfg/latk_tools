@@ -33,14 +33,8 @@ import os
 import pprint
 import sys
 
-try:
-    sys.path.append(os.path.join(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__))), 'Python'))
-    from tiltbrush.tilt import Tilt
-except ImportError:
-    print >>sys.stderr, "Please put the 'Python' directory in your PYTHONPATH"
-    sys.exit(1)
-    
+from tilt import Tilt
+
 def dump_sketch(sketch, filename):
     globalScale = (-0.01, 0.01, 0.01)
     globalOffset = (0, 0, 0)
@@ -65,19 +59,19 @@ def dump_sketch(sketch, filename):
             sb += "                            \"strokes\": [" + "\n"
             sb += "                                {" + "\n" # one stroke
             for i in range(0, len(sketch.strokes)):
-            	stroke = sketch.strokes[i]
-            	#vertGroupRaw = decodeData(data["strokes"][i]["v"], "v")
-            	#colorGroup = decodeData(data["strokes"][i]["c"], "c")
-            	#vertGroup = []
-            	# hack that only approximates original position
-            	'''
-            	for j in range(0, len(vertGroupRaw), 3):
-            		if (checkForZero(vertGroupRaw[j+1])==False):
-            			vertGroup.append(vertGroupRaw[j+1])
-            	'''
-            	#for j in range(0, len(vertGroupRaw), 3):
-            		#if (checkForZero(vertGroupRaw[j+2])==False):
-            			#vertGroup.append(vertGroupRaw[j+2])
+                stroke = sketch.strokes[i]
+                #vertGroupRaw = decodeData(data["strokes"][i]["v"], "v")
+                #colorGroup = decodeData(data["strokes"][i]["c"], "c")
+                #vertGroup = []
+                # hack that only approximates original position
+                '''
+                for j in range(0, len(vertGroupRaw), 3):
+                    if (checkForZero(vertGroupRaw[j+1])==False):
+                        vertGroup.append(vertGroupRaw[j+1])
+                '''
+                #for j in range(0, len(vertGroupRaw), 3):
+                    #if (checkForZero(vertGroupRaw[j+2])==False):
+                        #vertGroup.append(vertGroupRaw[j+2])
 
                 color = (0,0,0)
                 try:
@@ -85,9 +79,9 @@ def dump_sketch(sketch, filename):
                 except:
                     pass
                 if roundValues == True:
-                	sb += "                                    \"color\": [" + str(roundVal(color[0], numPlaces)) + ", " + str(roundVal(color[1], numPlaces)) + ", " + str(roundVal(color[2], numPlaces)) + "]," + "\n"
+                    sb += "                                    \"color\": [" + str(roundVal(color[0], numPlaces)) + ", " + str(roundVal(color[1], numPlaces)) + ", " + str(roundVal(color[2], numPlaces)) + "]," + "\n"
                 else:
-                	sb += "                                    \"color\": [" + str(color[0]) + ", " + str(color[1]) + ", " + str(color[2]) + "]," + "\n"
+                    sb += "                                    \"color\": [" + str(color[0]) + ", " + str(color[1]) + ", " + str(color[2]) + "]," + "\n"
                 sb += "                                    \"points\": [" + "\n"
                 for j in range(0, len(stroke.controlpoints)):
                     x = 0.0
@@ -148,7 +142,7 @@ def dump_sketch(sketch, filename):
     sg += "        }"+ "\n"
     sg += "    ]"+ "\n"
     sg += "}"+ "\n"
-	# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+    # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
     """Prints out some rough information about the strokes.
     Pass a tiltbrush.tilt.Sketch instance."""
     '''
@@ -185,7 +179,7 @@ def dump_stroke(stroke):
     if len(stroke.controlpoints) and 'timestamp' in stroke.cp_ext_lookup:
         cp = stroke.controlpoints[0]
         for i in range(0, len(stroke.controlpoints)):
-        	strokeOutput += str(i) + ". " + str(stroke.controlpoints[i].position) + "\n"
+            strokeOutput += str(i) + ". " + str(stroke.controlpoints[i].position) + "\n"
         timestamp = stroke.cp_ext_lookup['timestamp']
         start_ts = ' t:%6.1f' % (cp.extension[timestamp] * .001)
     else:
@@ -209,9 +203,9 @@ def dump_stroke(stroke):
 def rgbIntToTuple(rgbint, normalized=False):
     rgbVals = [ rgbint // 256 // 256 % 256, rgbint // 256 % 256, rgbint % 256 ]
     if (normalized == True):
-    	for i in range(0, len(rgbVals)):
-    		c = float(rgbVals[i]) / 255.0
-    		rgbVals[i] = c;
+        for i in range(0, len(rgbVals)):
+            c = float(rgbVals[i]) / 255.0
+            rgbVals[i] = c;
     return (rgbVals[2], rgbVals[1], rgbVals[0])
 
 def roundVal(a, b):
@@ -219,11 +213,11 @@ def roundVal(a, b):
     return formatter.format(a)
 
 def checkForZero(v):
-	hitRange = 0.005
-	if (abs(v[0]) < hitRange and abs(v[1]) < hitRange and abs(v[2]) < hitRange):
-		return True
-	else:
-		return False
+    hitRange = 0.005
+    if (abs(v[0]) < hitRange and abs(v[1]) < hitRange and abs(v[2]) < hitRange):
+        return True
+    else:
+        return False
 
 def main():
     import argparse
@@ -234,7 +228,7 @@ def main():
 
     args = parser.parse_args()
     if not (args.strokes or args.metadata):
-        print "You should pass at least one of --strokes or --metadata"
+        print("You should pass at least one of --strokes or --metadata")
 
     for filename in args.files:
         t = Tilt(filename)
