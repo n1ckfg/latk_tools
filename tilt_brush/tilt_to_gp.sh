@@ -8,4 +8,4 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd $DIR
 
-python tilt_to_gp.py --strokes $1
+python3 tilt_to_gp.py --strokes $1
